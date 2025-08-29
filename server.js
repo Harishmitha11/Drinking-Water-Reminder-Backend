@@ -9,7 +9,11 @@ const waterRoute = require("./routes/water");
 const logRoute = require("./routes/log");
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: "https://resilient-zabaione-8e4423.netlify.app", // replace with your actual Netlify URL
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true
+}));
 app.use(express.json());
 
 // Routes
