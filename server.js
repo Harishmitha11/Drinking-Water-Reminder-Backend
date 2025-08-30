@@ -106,5 +106,3 @@ app.listen(PORT, () => {
 app.post("/api/water", (req, res) => {
   res.json({ message: "Water log received" });
 });
-  
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
