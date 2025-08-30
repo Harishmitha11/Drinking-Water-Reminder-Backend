@@ -11,24 +11,13 @@ const logRoute = require("./routes/log");
 const app = express();
 
 // GLOBAL CORS - Allows ALL origins (domains)
-app.use(cors({
-  origin: true, // This allows ALL origins globally
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: [
-    "Origin",
-    "X-Requested-With",
-    "Content-Type", 
-    "Accept",
-    "Authorization",
-    "Cache-Control"
-  ],
-  credentials: true,
-  optionsSuccessStatus: 200
-}));
-
-// Handle all preflight requests globally
-app.options('*', cors());
-
+app.use(cors());  
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "*");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  next();
+});
 app.use(express.json());
 
 // Add root route
