@@ -11,21 +11,20 @@ const logRoute = require("./routes/log");
 const app = express();
 
 // GLOBAL CORS - Allows ALL origins (domains)
-app.use(cors({
-  origin: "https://drinking-water-reminder-frontend.onrender.com", 
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  credentials: true
-}));
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");  // ✅ key fix
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(200); // ✅ short-circuit preflight
+  }
+  next();
+});
 app.use(express.json());
 
 // Add root route
-app.get('/', (req, res) => {
-  res.json({ 
-    message: "Drinking Water API is running!",
-    status: "success",
-    cors: "GLOBAL - All origins allowed",
-    timestamp: new Date().toISOString()
-  });
+app.get("/", (req, res) => {
+  res.json({ message: "API running with CORS disabled" });
 });
 
 // Health check
