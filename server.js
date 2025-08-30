@@ -1,64 +1,36 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const dotenv = require("dotenv");
 const cors = require("cors");
+const bodyParser = require("body-parser");
 
-const waterRoute = require("./routes/water");
-const logRoute = require("./routes/log");
+const userInputRoutes = require("./routes/userInput");
 
-dotenv.config();
 const app = express();
 
-// --- CORS setup ---
+// ✅ Fix: Configure CORS properly
 app.use(
   cors({
-    origin: "*", // allow all origins
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Origin", "X-Requested-With", "Content-Type", "Accept", "Authorization"],
+    origin: "https://drinking-water-reminder-frontend.onrender.com", // your frontend link
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
-// --- Always handle OPTIONS globally ---
-app.use((req, res, next) => {
-  if (req.method === "OPTIONS") {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
-    return res.sendStatus(200);
-  }
-  next();
-});
+// Middleware
+app.use(bodyParser.json());
 
-app.use(express.json());
+// Routes
+app.use("/api/water", userInputRoutes);
 
-// --- Routes ---
-app.use("/api/water", waterRoute);
-app.use("/api/log", logRoute);
-
-// --- Health check ---
-app.get("/health", (req, res) => {
-  res.json({
-    status: "OK",
-    database: mongoose.connection.readyState === 1 ? "connected" : "disconnected",
-    uptime: process.uptime(),
-    timestamp: new Date().toISOString(),
-  });
-});
-
-// --- MongoDB connection ---
+// MongoDB connection
 mongoose
-  .connect(process.env.MONGO_URI, {
+  .connect("your-mongodb-url", {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
   .then(() => console.log("✅ MongoDB connected"))
-  .catch((err) => console.error("❌ MongoDB connection error:", err));
+  .catch((err) => console.log("❌ MongoDB error: " + err.message));
 
-// --- Start server ---
+// Start server
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
-  console.log(`🌍 CORS: Enabled for all origins`);
-});
-
-//latest
+app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
