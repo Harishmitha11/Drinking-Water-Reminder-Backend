@@ -11,13 +11,11 @@ const logRoute = require("./routes/log");
 const app = express();
 
 // GLOBAL CORS - Allows ALL origins (domains)
-app.use(cors());  
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "*");
-  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-  next();
-});
+app.use(cors({
+  origin: "https://drinking-water-reminder-frontend.onrender.com", 
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true
+}));
 app.use(express.json());
 
 // Add root route
@@ -104,3 +102,10 @@ app.listen(PORT, () => {
   console.log(`⚠️  WARNING: Global CORS enabled - suitable for development/testing`);
   console.log(`📅 Started: ${new Date().toISOString()}`);
 });
+
+app.post("/api/water", (req, res) => {
+  res.json({ message: "Water log received" });
+});
+
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
