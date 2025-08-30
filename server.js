@@ -106,6 +106,5 @@ app.listen(PORT, () => {
 app.post("/api/water", (req, res) => {
   res.json({ message: "Water log received" });
 });
-
-const PORT = process.env.PORT || 5000;
+  
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
